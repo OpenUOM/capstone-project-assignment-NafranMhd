@@ -1,4 +1,5 @@
 const dbConnection = require("./sqlite");
+const testBase = require("./test/testBase");
 
 dbConnection
     .getDbConnection()
@@ -19,7 +20,8 @@ function init(db) {
 const knex_db = require("./db-config");
 
 const dbinitialize = async () => {
-    testBase.resetDatabase(knex_db);
+    await testBase.resetDatabase(knex_db);
+    return { status: "Database initialized" };
 }
 
 const readTeachers = async () => {
@@ -166,6 +168,7 @@ const deleteStudent = async (id) => {
 
 
 module.exports = {
+    dbinitialize,
     readTeachers,
     readStudents,
     addStudent,
