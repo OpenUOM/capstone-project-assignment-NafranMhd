@@ -25,6 +25,12 @@ test('Testing search Teachers', async t => {
     const rowCount = await table.find('tr').count;
 
     let tdText = await table.find('tr').nth(rowCount-1).innerText;
+<<<<<<< HEAD
     await t.expect(rowCount).eql(2);
     await t.expect(tdText).contains("Parasanna");
+=======
+    await t.expect(rowCount).eql(2)
+
+    await t.navigateTo("/dbinitialize");
+>>>>>>> 07780f54247c73640b3924f1021fb83903c3c1aa
 });

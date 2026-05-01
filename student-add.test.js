@@ -1,11 +1,13 @@
 import { Selector, ClientFunction } from 'testcafe';
 process.env.NODE_ENV = "test";
 
+const getPageUrl = ClientFunction(() => window.location.href);
+
 fixture`Testing Student UI`
     .page`http://localhost:4401/student`
 
-test('Testing delete students', async t => {
-    // Wait for server to be ready and reset DB
+test('Testing add students', async t => {
+    // Wait for server to be ready
     let retries = 0;
     while (retries < 10) {
         try {
@@ -19,19 +21,17 @@ test('Testing delete students', async t => {
     if (retries === 10) throw new Error('Server failed to start');
 
     await t.navigateTo("/addStudent");
-    await t.typeText("#student-id", "222222");
-    await t.typeText("#student-name", "Hiruni Gajanayake");
+    await t.typeText("#student-id", "999999");
+    await t.typeText("#student-name", "Pasindu Basnayaka");
     await t.typeText("#student-age", "45");
-    await t.typeText("#student-Hometown", "buddhist");
+    await t.typeText("#student-Hometown", "Catholic");
     await t.click("#student-add");
 
     await t.navigateTo("/student");
-
-    await t.click("#student-delete-222222");
 
     const table = Selector('#student-table')
     const rowCount = await table.find('tr').count;
 
     let tdText = await table.find('tr').nth(rowCount - 1).innerText;
-    await t.expect(tdText).notContains("Hiruni Gajanayake");
+    await t.expect(tdText).contains("Pasindu Basnayaka");
 });
