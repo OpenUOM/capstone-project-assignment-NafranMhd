@@ -56,7 +56,8 @@ export class TeacherTableComponent implements OnInit {
   getStudentData() {
     this.selected = 'Students';
     this.service.getStudentData().subscribe((response) => {
-      this.teacherData = Object.keys(response).map((key) => [response[key]]);
+      this.allTeacherData = Object.keys(response).map((key) => [response[key]]);
+      this.teacherData = this.allTeacherData;
     }, (error) => {
       console.log('ERROR - ', error)
     })
