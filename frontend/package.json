@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "npm i && npm i forever && export NODE_ENV=test && forever start --minUptime 30000 ../backend/index.js && sleep 5 && forever start --minUptime 30000 node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.json --port 4401 && sleep 5 && testcafe \"chrome:headless --no-sandbox\" $file && forever stopall",
+    "test": "export NG_CLI_ANALYTICS=false && npm i && npm i forever && export NODE_ENV=test && forever start --minUptime 1000 ../backend/index.js && sleep 5 && forever start --minUptime 1000 node node_modules/@angular/cli/bin/ng serve --proxy-config proxy.conf.json --port 4401 --live-reload false --disable-host-check && sleep 20 && testcafe \"chrome:headless --no-sandbox\" $file && forever stopall",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
