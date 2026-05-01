@@ -1,23 +1,5 @@
-const dbConnection = require("./sqlite");
-const testBase = require("./test/testBase");
-
-dbConnection
-    .getDbConnection()
-    .then((db) => {
-        init(db);
-    })
-    .catch((err) => {
-        console.log(err);
-        throw err;
-    });
-
-let _db;
-
-function init(db) {
-    _db = db;
-}
-
 const knex_db = require("./db-config");
+const testBase = require("./test/testBase");
 
 const dbinitialize = async () => {
     await testBase.resetDatabase(knex_db);
@@ -58,7 +40,7 @@ const addTeacher = async (id, name, age) => {
         knex_db
             .raw(sql, [id, name, age])
             .then(() => {
-                resolve({status: "Successfully inserted Teacher"})
+                resolve({status: "Successfully added teacher"})
             })
             .catch((error) => {
                 reject(error);
@@ -130,7 +112,7 @@ const addStudent = async (id, name, age, hometown) => {
         knex_db
             .raw(sql, [id, name, age, hometown])
             .then(() => {
-                resolve({status: "Successfully inserted Student"});
+                resolve({status: "Successfully added student"});
             })
             .catch((error) => {
                 reject(error);
