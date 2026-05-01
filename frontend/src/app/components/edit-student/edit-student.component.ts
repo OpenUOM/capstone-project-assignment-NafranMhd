@@ -34,7 +34,7 @@ export class EditStudentComponent implements OnInit {
   editStudent(values){
     values.id = this.navigation.extras.state.id;
     this.service.editStudent(values).subscribe((response)=>{
-      this.router.navigate(['/student']);
+      this.studentData = response[0];
     },(error)=>{
       console.log('ERROR - ', error)
     })
