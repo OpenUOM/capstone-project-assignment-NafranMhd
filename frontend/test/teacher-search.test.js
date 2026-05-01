@@ -28,4 +28,3 @@ test('Testing search Teachers', async t => {
 
     await t.navigateTo("/dbinitialize");
 });
-});
