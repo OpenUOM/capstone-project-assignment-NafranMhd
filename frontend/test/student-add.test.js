@@ -2,12 +2,23 @@ import { Selector } from 'testcafe';
 process.env.NODE_ENV = "test";
 
 fixture`Testing Student UI`
-    .page`http://localhost:4401/`
+    // Do not use .page here to avoid early failure before server is ready
 
 test('Testing add students', async t => {
-    // Wait for server and reset DB
-    await t.navigateTo("http://localhost:4401/dbinitialize").wait(2000);
-    
+    // Robust wait for server to be ready
+    let retries = 0;
+    const maxRetries = 30; // 60 seconds total wait
+    while (retries < maxRetries) {
+        try {
+            await t.navigateTo("http://localhost:4401/dbinitialize");
+            break;
+        } catch (e) {
+            retries++;
+            await t.wait(2000);
+        }
+    }
+    if (retries === maxRetries) throw new Error('Server failed to start at localhost:4401');
+
     await t.navigateTo("http://localhost:4401/addStudent");
     const studentIdInput = Selector('#student-id').with({ visibilityCheck: true });
     await t.expect(studentIdInput.exists).ok({ timeout: 15000 });
