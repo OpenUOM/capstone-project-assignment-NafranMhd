@@ -5,11 +5,11 @@ fixture`Testing Student UI`
     .page`http://localhost:4401/student`
 
 test('Testing delete students', async t => {
-    // Wait for server to be ready
+    // Wait for server to be ready and reset DB
     let retries = 0;
     while (retries < 10) {
         try {
-            await t.navigateTo("/addStudent");
+            await t.navigateTo("/dbinitialize");
             break;
         } catch (e) {
             retries++;
@@ -18,6 +18,7 @@ test('Testing delete students', async t => {
     }
     if (retries === 10) throw new Error('Server failed to start');
 
+    await t.navigateTo("/addStudent");
     await t.typeText("#student-id", "222222");
     await t.typeText("#student-name", "Hiruni Gajanayake");
     await t.typeText("#student-age", "45");

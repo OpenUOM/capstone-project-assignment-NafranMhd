@@ -5,11 +5,11 @@ fixture`Testing Teacher UI`
     .page`http://localhost:4401/`
 
 test('Testing edit teachers', async t => {
-    // Wait for server to be ready
+    // Wait for server to be ready and reset DB
     let retries = 0;
     while (retries < 10) {
         try {
-            await t.navigateTo("/");
+            await t.navigateTo("/dbinitialize");
             break;
         } catch (e) {
             retries++;
@@ -18,6 +18,7 @@ test('Testing edit teachers', async t => {
     }
     if (retries === 10) throw new Error('Server failed to start');
 
+    await t.navigateTo("/");
     await t.click("#teacher-edit-10003");
 
     await t.typeText("#teacher-name", "Changed Teacher Name");
