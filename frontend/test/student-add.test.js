@@ -1,12 +1,24 @@
-import { Selector } from 'testcafe';
+import { Selector, ClientFunction } from 'testcafe';
 process.env.NODE_ENV = "test";
+
+const getPageUrl = ClientFunction(() => window.location.href);
 
 fixture`Testing Student UI`
     .page`http://localhost:4401/student`
 
 test('Testing add students', async t => {
-
-    await t.navigateTo("/dbinitialize");
+    // Wait for server to be ready
+    let retries = 0;
+    while (retries < 10) {
+        try {
+            await t.navigateTo("/dbinitialize");
+            break;
+        } catch (e) {
+            retries++;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+    if (retries === 10) throw new Error('Server failed to start');
 
     await t.navigateTo("/addStudent");
     await t.typeText("#student-id", "999999");

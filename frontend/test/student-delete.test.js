@@ -1,11 +1,23 @@
-import { Selector } from 'testcafe';
+import { Selector, ClientFunction } from 'testcafe';
 process.env.NODE_ENV = "test";
 
 fixture`Testing Student UI`
     .page`http://localhost:4401/student`
 
 test('Testing delete students', async t => {
-    await t.navigateTo("/addStudent");
+    // Wait for server to be ready
+    let retries = 0;
+    while (retries < 10) {
+        try {
+            await t.navigateTo("/addStudent");
+            break;
+        } catch (e) {
+            retries++;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+    if (retries === 10) throw new Error('Server failed to start');
+
     await t.typeText("#student-id", "222222");
     await t.typeText("#student-name", "Hiruni Gajanayake");
     await t.typeText("#student-age", "45");

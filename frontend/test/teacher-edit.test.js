@@ -3,8 +3,21 @@ process.env.NODE_ENV = "test";
 
 fixture`Testing Teacher UI`
     .page`http://localhost:4401/`
+
 test('Testing edit teachers', async t => {
-    await t.navigateTo("/");
+    // Wait for server to be ready
+    let retries = 0;
+    while (retries < 10) {
+        try {
+            await t.navigateTo("/");
+            break;
+        } catch (e) {
+            retries++;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+    if (retries === 10) throw new Error('Server failed to start');
+
     await t.click("#teacher-edit-10003");
 
     await t.typeText("#teacher-name", "Changed Teacher Name");

@@ -5,7 +5,19 @@ fixture`Testing Student UI`
     .page`http://localhost:4401/student`
 
 test('Testing edit students', async t => {
-    await t.navigateTo("/addStudent");
+    // Wait for server to be ready
+    let retries = 0;
+    while (retries < 10) {
+        try {
+            await t.navigateTo("/addStudent");
+            break;
+        } catch (e) {
+            retries++;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+    if (retries === 10) throw new Error('Server failed to start');
+
     await t.typeText("#student-id", "999999");
     await t.typeText("#student-name", "Pasindu Basnayaka");
     await t.typeText("#student-age", "45");

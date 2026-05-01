@@ -5,7 +5,18 @@ fixture`Testing Teacher UI`
     .page`http://localhost:4401/`
 
 test('Testing add teachers', async t => {
-    await t.navigateTo("/dbinitialize");
+    // Wait for server to be ready
+    let retries = 0;
+    while (retries < 10) {
+        try {
+            await t.navigateTo("/dbinitialize");
+            break;
+        } catch (e) {
+            retries++;
+            await new Promise(resolve => setTimeout(resolve, 1000));
+        }
+    }
+    if (retries === 10) throw new Error('Server failed to start');
 
     await t.navigateTo("/addTeacher");
     await t.typeText("#teacher-id", "123456");
