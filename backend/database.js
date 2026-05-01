@@ -1,4 +1,5 @@
 const dbConnection = require("./sqlite");
+const testBase = require("./test/testBase");
 
 dbConnection
   .getDbConnection()
@@ -19,7 +20,7 @@ function init(db) {
 const knex_db = require("./db-config");
 
 const dbinitialize = async () => {
-    testBase.resetDatabase(knex_db);
+    await testBase.resetDatabase(knex_db);
 }
 
 const readTeachers = async () => {
@@ -65,17 +66,14 @@ const addTeacher = async (id, name, age) => {
 }
 
 const updateTeacher = async (name, age, id) => {
-    const sql = `UPDATE teacher SET name=?, age=? WHERE id=?`
-    return new Promise((resolve, reject) => {
-        knex_db
-            .raw(sql, [name, age, id])
-            .then(() => {
-                resolve({status: "Successfully updated Teacher"})
-            })
-            .catch((error) => {
-                reject(error);
-            });
-    });
+    try {
+        const affectedRows = await knex_db('teacher')
+            .where({ id: id })
+            .update({ name: name, age: age });
+        return {status: "Successfully updated Teacher"};
+    } catch (error) {
+        throw error;
+    }
 }
 
 const deleteTeacher = async (id) => {
@@ -134,19 +132,16 @@ const addStudent = async (id, name, age, hometown) => {
     });
 }
 
-const updateStudent = async (name, age, id, hometown) => {
-    const sql = `UPDATE student SET name=?, age=?, hometown=? WHERE id=?`
-    return new Promise((resolve, reject) => {
-        knex_db
-            .raw(sql, [name, age, id, hometown])
-            .then(() => {
-                resolve({status: "Successfully updated Student"})
-            })
-            .catch((error) => {
-                reject(error);
-            });
-    });
-} 
+const updateStudent = async (name, age, hometown, id) => {
+    try {
+        const affectedRows = await knex_db('student')
+            .where({ id: id })
+            .update({ name: name, age: age, hometown: hometown });
+        return {status: "Successfully updated Student"};
+    } catch (error) {
+        throw error;
+    }
+}
 
 const deleteStudent = async (id) => {
     const sql = `DELETE FROM student WHERE id = ?`
@@ -172,5 +167,6 @@ module.exports = {
     readStudentInfo,
     readTeacherInfo,
     updateStudent,
-    updateTeacher
+    updateTeacher,
+    dbinitialize
 };
