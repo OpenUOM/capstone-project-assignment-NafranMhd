@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AppServiceService } from 'src/app/app-service.service';
+import { AppServiceService } from '../../app-service.service';
 
 @Component({
   selector: 'app-add-new-student',
