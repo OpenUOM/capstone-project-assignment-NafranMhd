@@ -1,37 +1,48 @@
-import { Selector, ClientFunction } from 'testcafe';
+import { Selector } from 'testcafe';
 process.env.NODE_ENV = "test";
 
 fixture`Testing Student UI`
-    .page`http://localhost:4401/student`
+    .page`http://localhost:4401/`
 
 test('Testing delete students', async t => {
-    // Wait for server to be ready and reset DB
     let retries = 0;
-    while (retries < 10) {
+    const maxRetries = 20;
+    while (retries < maxRetries) {
         try {
-            await t.navigateTo("/dbinitialize");
-            break;
+            await t.navigateTo("http://localhost:4401/dbinitialize");
+            const body = await Selector('pre').innerText;
+            if (body.includes('Database initialized')) break;
         } catch (e) {
             retries++;
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            await t.wait(2000);
         }
     }
-    if (retries === 10) throw new Error('Server failed to start');
+    if (retries === maxRetries) throw new Error('Server failed to start');
 
-    await t.navigateTo("/addStudent");
+    const navbar = Selector('app-navbar').with({ visibilityCheck: true });
+    await t.expect(navbar.exists).ok({ timeout: 15000 });
+
+    await t.navigateTo("http://localhost:4401/addStudent");
+    const studentIdInput = Selector('#student-id').with({ visibilityCheck: true });
+    await t.expect(studentIdInput.exists).ok({ timeout: 10000 });
+
     await t.typeText("#student-id", "222222");
     await t.typeText("#student-name", "Hiruni Gajanayake");
     await t.typeText("#student-age", "45");
-    await t.typeText("#student-Hometown", "buddhist");
+    await t.typeText("#student-hometown", "buddhist");
     await t.click("#student-add");
 
-    await t.navigateTo("/student");
+    const table = Selector('#student-table').with({ visibilityCheck: true });
+    await t.expect(table.exists).ok({ timeout: 10000 });
+
+    let rowCount = await table.find('tr').count;
+    await t.expect(rowCount).eql(4);
 
     await t.click("#student-delete-222222");
-
-    const table = Selector('#student-table')
-    const rowCount = await table.find('tr').count;
-
-    let tdText = await table.find('tr').nth(rowCount - 1).innerText;
-    await t.expect(tdText).notContains("Hiruni Gajanayake");
+    
+    // Wait for the row to disappear
+    await t.expect(Selector('#student-delete-222222').exists).notOk({ timeout: 10000 });
+    
+    rowCount = await table.find('tr').count;
+    await t.expect(rowCount).eql(3);
 });

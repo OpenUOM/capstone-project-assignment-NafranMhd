@@ -1,17 +1,20 @@
 {
-    "/api/*" : {
-        "target" : "http://localhost:8080",
-        "pathRewrite" : {
-            "^/api" : ""
+    "/api": {
+        "target": "http://localhost:3000",
+        "secure": false,
+        "pathRewrite": {
+            "^/api": ""
         }
     },
-    "/test/*" : {
-        "target" : "http://localhost:3000",
-        "pathRewrite" : {
-            "^/test" : ""
+    "/test": {
+        "target": "http://localhost:3000",
+        "secure": false,
+        "pathRewrite": {
+            "^/test": ""
         }
     },
-    "/dbinitialize" : {
-        "target" : "http://localhost:3000"
+    "/dbinitialize": {
+        "target": "http://localhost:3000",
+        "secure": false
     }
 }
