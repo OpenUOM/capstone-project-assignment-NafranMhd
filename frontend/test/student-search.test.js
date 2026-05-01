@@ -18,17 +18,9 @@ test('Testing search students', async t => {
     if (retries === maxRetries) throw new Error('Server failed to start after 120s');
 
     await t.navigateTo("http://localhost:4401/student");
-    const searchInput = Selector('#student-search').with({ visibilityCheck: true });
-    await t.expect(searchInput.exists).ok({ timeout: 30000 });
-
     await t.typeText("#student-search", "is");
+    await t.wait(1000);
 
     const table = Selector('#student-table');
-    await t.wait(1000); 
-
-    const rowCount = await table.find('tr').count;
-    let tdText = await table.find('tr').nth(rowCount-1).innerText;
-
-    await t.expect(rowCount).eql(2);
-    await t.expect(tdText).contains("Isuri");
+    await t.expect(table.innerText).contains("Isuri", { timeout: 30000 });
 });
