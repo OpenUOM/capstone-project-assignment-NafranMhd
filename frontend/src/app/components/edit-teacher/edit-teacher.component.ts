@@ -22,9 +22,8 @@ export class EditTeacherComponent implements OnInit {
   }
 
   getTeacherData(){
-    let teacherId = this.navigation?.extras?.state?.id || history.state.id;
     let teacher = {
-      id : teacherId
+      id : this.navigation.extras.state.id
     }
     this.service.getOneTeacherData(teacher).subscribe((response)=>{
       this.teacherData = response[0];
@@ -34,9 +33,9 @@ export class EditTeacherComponent implements OnInit {
   }
 
   editTeacher(values){
-    values.id = this.navigation?.extras?.state?.id || history.state.id;
+    values.id = this.navigation.extras.state.id;
     this.service.editTeacher(values).subscribe((response)=>{
-      this.router.navigate([''])
+      this.teacherData = response[0];
     },(error)=>{
       console.log('ERROR - ', error)
     })

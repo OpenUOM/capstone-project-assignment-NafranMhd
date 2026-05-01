@@ -1,27 +1,23 @@
-import { Selector } from 'testcafe';
+import {Selector} from 'testcafe';
 process.env.NODE_ENV = "test";
 
 fixture`Testing Teacher UI`
-
+    .page`http://localhost:4401/`
 test('Testing edit teachers', async t => {
-    let retries = 0;
-    const maxRetries = 60;
-    while (retries < maxRetries) {
-        try {
-            await t.navigateTo("http://localhost:4401/dbinitialize");
-            break;
-        } catch (e) {
-            retries++;
-            await t.wait(2000);
-        }
-    }
-    if (retries === maxRetries) throw new Error('Server failed to start after 120s');
-
-    await t.navigateTo("http://localhost:4401/");
+    
     await t.click("#teacher-edit-10003");
-    await t.typeText("#teacher-name", "Changed Teacher Name", { replace: true });
+
+    await t.typeText("#teacher-name", "Changed Teacher Name");
+    await t.typeText("#teacher-age", "99");
     await t.click("#teacher-edit");
 
-    const table = Selector('#teacher-table').with({ visibilityCheck: true });
-    await t.expect(table.innerText).contains("Changed Teacher Name", { timeout: 30000 });
+    await t.navigateTo("/");
+
+    const table = Selector('#teacher-table')
+    const rowCount = await table.find('tr').count;
+
+    let tdText = await table.find('tr').nth(rowCount - 1).innerText;
+    await t.expect(tdText).contains("Changed Teacher Name");
+
+    await t.click("#teacher-delete-10003");
 });
